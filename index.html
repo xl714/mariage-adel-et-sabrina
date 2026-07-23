@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adel &amp; Sabrina — Le Film</title>
+<style>
+  :root {
+    --bg: #1c1a17;
+    --film: #0b0a09;
+    --hole: #262320;
+    --paper: #e8e0cc;
+    --paper-dim: #b8ae96;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at center, #2a2723 0%, #14120f 100%);
+    font-family: Georgia, 'Times New Roman', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ---------- La pellicule ---------- */
+  .filmstrip {
+    position: relative;
+    width: min(96vw, 1400px);
+    height: min(94vh, 900px);
+    background: var(--film);
+    border-radius: 6px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 1px #000;
+    display: flex;
+    flex-direction: column;
+    padding: 0 26px;
+  }
+
+  /* Rangées de perforations (trous carrés) */
+  .holes {
+    flex: 0 0 46px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 0 10px;
+    overflow: hidden;
+  }
+  .holes span {
+    flex: 1 0 auto;
+    max-width: 34px;
+    height: 22px;
+    background:
+      linear-gradient(145deg, #0e0d0b 0%, var(--hole) 40%, #33302b 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.05);
+  }
+
+  /* ---------- L'écran / le cadre image ---------- */
+  .screen {
+    flex: 1 1 auto;
+    position: relative;
+    margin: 4px 6px;
+    background: #050505;
+    border: 1px solid #000;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3.5%;
+  }
+
+  /* Photos et vidéos : en couleur, seul le cadre est façon vieux film */
+  .frame img,
+  .frame video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: 0 0 40px rgba(0,0,0,.9);
+  }
+  .frame video { position: relative; z-index: 8; }
+
+  /* Cartons de texte façon film muet */
+  .intertitle {
+    max-width: 82%;
+    padding: clamp(24px, 5vh, 56px) clamp(28px, 5vw, 72px);
+    border: 3px double var(--paper-dim);
+    outline: 1px solid rgba(184,174,150,.35);
+    outline-offset: 8px;
+    text-align: center;
+    color: var(--paper);
+    font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+    font-style: italic;
+    line-height: 1.45;
+    letter-spacing: .04em;
+    text-shadow: 0 0 12px rgba(232,224,204,.25);
+  }
+  .intertitle .fleuron {
+    display: block;
+    font-style: normal;
+    font-size: .55em;
+    margin-top: .9em;
+    color: var(--paper-dim);
+    letter-spacing: .5em;
+  }
+
+  /* Slides "à tourner" (images manquantes) */
+  .todo {
+    max-width: 78%;
+    text-align: center;
+    color: var(--paper-dim);
+    border: 2px dashed rgba(184,174,150,.45);
+    padding: clamp(20px, 4vh, 44px) clamp(24px, 4vw, 60px);
+  }
+  .todo .clap {
+    filter: grayscale(1);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    margin-bottom: 1em;
+    color: var(--paper);
+  }
+  .todo p {
+    font-style: italic;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    line-height: 1.5;
+  }
+
+  /* ---------- Effets vieux film ---------- */
+  .grain {
+    position: absolute;
+    inset: -60%;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+    opacity: .11;
+    animation: grain .45s steps(4) infinite;
+    z-index: 4;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-3%, 2%); }
+    50%  { transform: translate(2%, -4%); }
+    75%  { transform: translate(-2%, -1%); }
+    100% { transform: translate(3%, 3%); }
+  }
+
+  .flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: #000;
+    animation: flicker 2.4s steps(1) infinite;
+    z-index: 5;
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: .02; }
+    8%  { opacity: .07; }
+    11% { opacity: .015; }
+    34% { opacity: .05; }
+    36% { opacity: .09; }
+    38% { opacity: .02; }
+    61% { opacity: .045; }
+    83% { opacity: .08; }
+    85% { opacity: .01; }
+  }
+
+  .scratches {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, transparent 12%, rgba(232,224,204,.05) 12.1%, transparent 12.25%),
+      linear-gradient(90deg, transparent 63%, rgba(232,224,204,.04) 63.05%, transparent 63.2%),
+      linear-gradient(90deg, transparent 87%, rgba(0,0,0,.25) 87.1%, transparent 87.3%);
+    animation: scratches 3.7s steps(2) infinite;
+    z-index: 4;
+  }
+  @keyframes scratches {
+    0%, 100% { opacity: .8; transform: translateX(0); }
+    30% { opacity: .2; transform: translateX(-1.5%); }
+    55% { opacity: .9; transform: translateX(2%); }
+    80% { opacity: .3; transform: translateX(-0.5%); }
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.55) 88%, rgba(0,0,0,.85) 100%);
+    z-index: 6;
+  }
+
+  /* Saut de pellicule au changement de slide */
+  .frame.reel {
+    animation: reel .38s steps(3) both;
+  }
+  @keyframes reel {
+    0%   { transform: translateY(46%);  filter: brightness(2.2); }
+    35%  { transform: translateY(-18%); filter: brightness(.4); }
+    70%  { transform: translateY(7%);   filter: brightness(1.5); }
+    100% { transform: translateY(0);    filter: brightness(1); }
+  }
+
+  /* ---------- Flèches ---------- */
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: clamp(52px, 6vw, 74px);
+    height: clamp(52px, 6vw, 74px);
+    border-radius: 50%;
+    border: 2px solid rgba(232,224,204,.4);
+    background: rgba(11,10,9,.65);
+    color: var(--paper);
+    font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+    font-family: Georgia, serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4px;
+    transition: background .2s, border-color .2s, opacity .2s;
+  }
+  .nav:hover:not(:disabled) {
+    background: rgba(232,224,204,.15);
+    border-color: var(--paper);
+  }
+  .nav:disabled { opacity: .18; cursor: default; }
+  .nav.prev { left: clamp(8px, 2vw, 34px); }
+  .nav.next { right: clamp(8px, 2vw, 34px); }
+
+  /* ---------- Compteur façon bord de pellicule ---------- */
+  .counter {
+    position: absolute;
+    bottom: 12px;
+    right: 44px;
+    z-index: 7;
+    color: rgba(232,224,204,.55);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: .3em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="filmstrip">
+    <div class="holes top"></div>
+
+    <div class="screen">
+      <div class="frame" id="frame"></div>
+      <div class="scratches"></div>
+      <div class="grain"></div>
+      <div class="flicker"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <div class="holes bottom"></div>
+
+    <button class="nav prev" id="prev" aria-label="Slide précédente">&#10094;</button>
+    <button class="nav next" id="next" aria-label="Slide suivante">&#10095;</button>
+    <div class="counter" id="counter"></div>
+  </div>
+
+<script>
+  /* ============================================================
+     LISTE DES SLIDES — modifier ici pour ajouter / réordonner.
+     type: 'text'  -> carton de texte façon film muet
+     type: 'image' -> src relatif vers l'image
+     type: 'todo'  -> emplacement réservé (image pas encore prête)
+     ============================================================ */
+  const SLIDES = [
+    { type: 'text',  text: "Voici l'histoire de la rencontre d'Adel" },
+    { type: 'image', src: '001-Adel.png' },
+    { type: 'text',  text: "et Sabrina" },
+    { type: 'image', src: '002-Sab.png' },
+    { type: 'text',  text: "Chacun menait sa vie de célibataire comme il l'entendait." },
+    { type: 'text',  text: "Adel totalement déprimé et célibataire :" },
+    { type: 'image', src: '01.png' },
+    { type: 'text',  text: "Sabrina totalement déprimée et célibataire :" },
+    { type: 'image', src: '02.png' },
+    { type: 'text',  text: "C'est pourquoi chacun avait mis sa meilleure photo sur son profil Tinder" },
+    { type: 'image', src: 'adel-best-tinder-photo.jpg' },
+    { type: 'image', src: 'sab-best-tinder-photo.png' },
+    { type: 'text',  text: "Quand soudain un jour" },
+    { type: 'image', src: '03.png' },
+    { type: 'text',  text: "Ils se rencontrèrent" },
+    { type: 'image', src: '04-parc.png' },
+    { type: 'text',  text: "Chacun montra le meilleur de soi-même avec un peu d'humour." },
+    { type: 'image', src: '05-sab-joke.png' },
+    { type: 'text',  text: "Vif comme l'éclair, Adel comprit immédiatement la blague et enchaîna par une de ses préférées :" },
+    { type: 'image', src: '06-adel-joke.png' },
+    { type: 'image', src: '07-sab-hesitation.png' },
+    { type: 'image', src: '08-sab-nsfw.png' },
+    { type: 'text',  text: "Oups.. c'était pas celle là..." },
+    { type: 'text',  text: "Hmmm... voilà !" },
+    { type: 'image', src: '09-sab-sfw.png' },
+    { type: 'image', src: '10-yeah.png' },
+    { type: 'image', src: '11-wedding.png' },
+    { type: 'text',  text: "Et juste pour le dossier" },
+    { type: 'video', src: 'adel-balancoire.mp4' },
+  ];
+
+  const frame   = document.getElementById('frame');
+  const counter = document.getElementById('counter');
+  const btnPrev = document.getElementById('prev');
+  const btnNext = document.getElementById('next');
+  let current = 0;
+
+  // Perforations : nombre adapté à la largeur
+  function buildHoles() {
+    document.querySelectorAll('.holes').forEach(row => {
+      row.innerHTML = '';
+      const n = Math.max(8, Math.floor(row.clientWidth / 52));
+      for (let i = 0; i < n; i++) row.appendChild(document.createElement('span'));
+    });
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function render() {
+    const s = SLIDES[current];
+    frame.classList.remove('reel');
+    void frame.offsetWidth; // relance l'animation de saut de pellicule
+    frame.classList.add('reel');
+
+    if (s.type === 'image') {
+      frame.innerHTML = `<img src="${s.src}" alt="">`;
+    } else if (s.type === 'video') {
+      // Pas d'autoplay : lecture uniquement au clic du user sur play
+      frame.innerHTML = `<video src="${s.src}" controls loop playsinline preload="metadata"></video>`;
+    } else if (s.type === 'text') {
+      frame.innerHTML = `<div class="intertitle">${s.text}<span class="fleuron">&#10022; &#10022; &#10022;</span></div>`;
+    } else {
+      frame.innerHTML = `<div class="todo"><div class="clap">&#127916; Scène à tourner</div><p>${s.text}</p></div>`;
+    }
+
+    counter.textContent = pad(current + 1) + ' / ' + pad(SLIDES.length);
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === SLIDES.length - 1;
+  }
+
+  function go(delta) {
+    const target = current + delta;
+    if (target < 0 || target >= SLIDES.length) return;
+    current = target;
+    render();
+  }
+
+  // Navigation uniquement sur action explicite du user : clic ou touche.
+  // Aucun minuteur / autoplay nulle part.
+  btnPrev.addEventListener('click', () => { go(-1); btnPrev.blur(); });
+  btnNext.addEventListener('click', () => { go(1);  btnNext.blur(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.repeat) return; // touche maintenue = une seule slide
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); go(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+  });
+
+  window.addEventListener('resize', buildHoles);
+
+  // Préchargement des images pour des transitions nettes
+  SLIDES.filter(s => s.type === 'image').forEach(s => { new Image().src = s.src; });
+
+  buildHoles();
+  render();
+</script>
+</body>
+</html>
