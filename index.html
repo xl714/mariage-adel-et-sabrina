@@ -242,6 +242,43 @@
   .nav.prev { left: clamp(8px, 2vw, 34px); }
   .nav.next { right: clamp(8px, 2vw, 34px); }
 
+  /* ---------- Choix de langue (drapeaux) ---------- */
+  .flags {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    display: none; /* cachés par défaut — touche L pour afficher */
+    gap: 10px;
+  }
+  .flags.visible { display: flex; }
+  .flag {
+    width: 40px;
+    height: 27px;
+    padding: 0;
+    border: 2px solid rgba(232,224,204,.35);
+    border-radius: 3px;
+    background: none;
+    cursor: pointer;
+    opacity: .45;
+    filter: saturate(.75) brightness(.9);
+    transition: opacity .2s, border-color .2s, filter .2s;
+  }
+  .flag svg { display: block; width: 100%; height: 100%; }
+  .flag:hover { opacity: .8; }
+  .flag.active {
+    opacity: 1;
+    border-color: var(--paper);
+    filter: none;
+  }
+
+  /* Rendu du chinois : pas d'italique synthétique, typo adaptée */
+  html[lang="zh"] .intertitle {
+    font-style: normal;
+    letter-spacing: .12em;
+    font-family: Georgia, KaiTi, 'Kaiti SC', STKaiti, 'Microsoft YaHei', serif;
+  }
+
   /* ---------- Compteur façon bord de pellicule ---------- */
   .counter {
     position: absolute;
@@ -266,6 +303,15 @@
       <div class="grain"></div>
       <div class="flicker"></div>
       <div class="vignette"></div>
+
+      <div class="flags">
+        <button class="flag active" id="lang-fr" aria-label="Français" title="Français">
+          <svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#f2efe6"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>
+        </button>
+        <button class="flag" id="lang-zh" aria-label="中文" title="中文">
+          <svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="30" height="20" fill="#DE2910"/><g fill="#FFDE00"><polygon transform="translate(5,5) scale(3)" points="0,-1 -0.2245,-0.309 -0.9511,-0.309 -0.3633,0.118 -0.5878,0.809 0,0.382 0.5878,0.809 0.3633,0.118 0.9511,-0.309 0.2245,-0.309"/><polygon transform="translate(10,2)" points="0,-1 -0.2245,-0.309 -0.9511,-0.309 -0.3633,0.118 -0.5878,0.809 0,0.382 0.5878,0.809 0.3633,0.118 0.9511,-0.309 0.2245,-0.309"/><polygon transform="translate(12,4)" points="0,-1 -0.2245,-0.309 -0.9511,-0.309 -0.3633,0.118 -0.5878,0.809 0,0.382 0.5878,0.809 0.3633,0.118 0.9511,-0.309 0.2245,-0.309"/><polygon transform="translate(12,7)" points="0,-1 -0.2245,-0.309 -0.9511,-0.309 -0.3633,0.118 -0.5878,0.809 0,0.382 0.5878,0.809 0.3633,0.118 0.9511,-0.309 0.2245,-0.309"/><polygon transform="translate(10,9)" points="0,-1 -0.2245,-0.309 -0.9511,-0.309 -0.3633,0.118 -0.5878,0.809 0,0.382 0.5878,0.809 0.3633,0.118 0.9511,-0.309 0.2245,-0.309"/></g></svg>
+        </button>
+      </div>
     </div>
 
     <div class="holes bottom"></div>
@@ -279,53 +325,74 @@
   /* ============================================================
      LISTE DES SLIDES — modifier ici pour ajouter / réordonner.
      type: 'text'  -> carton de texte façon film muet
+                      (text = français, zh = traduction chinoise)
      type: 'image' -> src relatif vers l'image
      type: 'todo'  -> emplacement réservé (image pas encore prête)
      ============================================================ */
   const SLIDES = [
-    { type: 'text',  text: "Voici l'histoire de la rencontre" },
-    { type: 'text',  text: "d'Adel" },
-    { type: 'image', src: '001-Adel.png' },
-    { type: 'text',  text: "et Sabrina" },
-    { type: 'image', src: '002-Sab.png' },
-    { type: 'text',  text: "Chacun menait sa vie de célibataire comme il l'entendait." },
-    { type: 'text',  text: "Adel totalement déprimé et célibataire :" },
-    { type: 'image', src: '01.png' },
-    { type: 'text',  text: "Sabrina Tobalement déprimée et célibataire :" },
-    { type: 'image', src: '02.png' },
-    { type: 'text',  text: "C'est pourquoi chacun avait mis sa meilleure photo sur son profil Tinder:" },
-    { type: 'image', src: 'adel-best-tinder-photo.jpg' },
-    { type: 'image', src: 'sab-best-tinder-photo.png' },
-    { type: 'text',  text: "Quand soudain un jour" },
-    { type: 'image', src: '03.png' },
-    { type: 'text',  text: "Ils se rencontrèrent" },
-    { type: 'image', src: '04-parc.png' },
-    { type: 'text',  text: "Chacun montra le meilleur de soi-même avec un peu d'humour." },
-    { type: 'image', src: '05-sab-joke.png' },
-    { type: 'text',  text: "Vif comme l'éclair, Adel comprit immédiatement la blague et enchaîna par une de ses préférées :" },
-    { type: 'image', src: '06-adel-joke.png' },
-    { type: 'text',  text: "⚠️Fail⚠️ Si t'es pas dans l'informatique pour celle-là c'est mort" },
-    { type: 'image', src: '07-sab-hesitation.png' },
-    { type: 'text',  text: "Qu'est-ce qu'il me raconte ?" },
-    { type: 'text',  text: "Heureusement il a l'essentiel" },
-    { type: 'image', src: '08-sab-nsfw.png' },
-    { type: 'text',  text: "Oups.. c'était pas celle là..." },
-    { type: 'image', src: '09-sab-sfw.png' },
-    { type: 'image', src: '10-yeah.png' },
-    { type: 'text',  text: "Depuis ce jour ça colle si bien..." },
-    { type: 'image', src: '10b.png' },
-    { type: 'text',  text: "En tout cas, on sait tous maintenant où ça les a menés et c'est magnifique !" },
-    { type: 'image', src: '11-wedding.png' },
-    { type: 'text',  text: "Et juste pour le dossier:" },
-    { type: 'image', src: 'sab-chunli.jpg' },
-    { type: 'video', src: 'adel-balancoire.mp4' },
+    { type: 'text',  text: "Voici l'histoire de la rencontre", zh: "下面讲述的，是一段相遇的故事" },
+    { type: 'text',  text: "d'Adel", zh: "阿德尔（Adel）" },
+    { type: 'image', src: 'img/001-Adel.png' },
+    { type: 'text',  text: "et Sabrina", zh: "与萨布丽娜（Sabrina）" },
+    { type: 'image', src: 'img/002-Sab.png' },
+    { type: 'text',  text: "Chacun menait sa vie de célibataire comme il l'entendait.", zh: "两人各自过着随心所欲的单身生活。" },
+    { type: 'text',  text: "Adel totalement déprimé et célibataire :", zh: "单身的阿德尔，郁闷至极：" },
+    { type: 'image', src: 'img/01.png' },
+    { type: 'text',  text: "Sabrina Tobalement déprimée et célibataire :", zh: "单身的萨布丽娜，郁闷至极：" },
+    { type: 'image', src: 'img/02.png' },
+    { type: 'text',  text: "C'est pourquoi chacun avait mis sa meilleure photo sur son profil Tinder:", zh: "于是，两人都把自己最好看的照片放上了 Tinder：" },
+    { type: 'image', src: 'img/adel-best-tinder-photo.jpg' },
+    { type: 'image', src: 'img/sab-best-tinder-photo.png' },
+    { type: 'text',  text: "Quand soudain un jour", zh: "直到有一天，突然……" },
+    { type: 'image', src: 'img/03.png' },
+    { type: 'text',  text: "Ils se rencontrèrent", zh: "他们相遇了" },
+    { type: 'image', src: 'img/04-parc.png' },
+    { type: 'text',  text: "Chacun montra le meilleur de soi-même avec un peu d'humour.", zh: "两人都拿出了最好的自己，还带上一点幽默。" },
+    { type: 'image', src: 'img/05-sab-joke.png' },
+    { type: 'text',  text: "Vif comme l'éclair, Adel comprit immédiatement la blague et enchaîna par une de ses préférées :", zh: "阿德尔反应快如闪电，秒懂笑点，随即接上一个他的得意段子：" },
+    { type: 'image', src: 'img/06-adel-joke.png' },
+    { type: 'text',  text: "⚠️Fail⚠️ Si t'es pas dans l'informatique pour celle-là c'est mort", zh: "⚠️翻车⚠️ 不是搞 IT 的，这个梗就没救了" },
+    { type: 'image', src: 'img/07-sab-hesitation.png' },
+    { type: 'text',  text: "Qu'est-ce qu'il me raconte ?", zh: "他到底在说什么呀？" },
+    { type: 'text',  text: "Heureusement il a l'essentiel", zh: "幸好，他有最关键的优点" },
+    { type: 'image', src: 'img/08-sab-nsfw.png' },
+    { type: 'text',  text: "Oups.. c'était pas celle là...", zh: "哎呀……放错张了……" },
+    { type: 'image', src: 'img/09-sab-sfw.png' },
+    { type: 'image', src: 'img/10-yeah.png' },
+    { type: 'text',  text: "Depuis ce jour ça colle si bien...", zh: "从那天起，两人便如胶似漆……" },
+    { type: 'image', src: 'img/10b.png' },
+    { type: 'text',  text: "En tout cas, on sait tous maintenant où ça les a menés et c'est magnifique !", zh: "总之，大家现在都知道这段缘分把他们带到了哪里——太美好了！" },
+    { type: 'image', src: 'img/11-wedding.png' },
+    { type: 'text',  text: "Et juste pour le dossier:", zh: "最后，附上花絮存档：" },
+    { type: 'image', src: 'img/sab-chunli.jpg' },
+    { type: 'image', src: 'img/adel-balancoire.gif' },
+    { type: 'text',  text: "Failed generations", zh: "生成翻车合集" },
+    { type: 'image', src: 'img/fail/no1.png' },
+    { type: 'image', src: 'img/fail/no2.png' },
+    { type: 'image', src: 'img/fail/no3.png' },
+    { type: 'image', src: 'img/fail/no4.png' },
   ];
 
   const frame   = document.getElementById('frame');
   const counter = document.getElementById('counter');
   const btnPrev = document.getElementById('prev');
   const btnNext = document.getElementById('next');
+  const btnFr   = document.getElementById('lang-fr');
+  const btnZh   = document.getElementById('lang-zh');
   let current = 0;
+  let lang = 'fr'; // langue par défaut
+
+  const UI = {
+    todo: { fr: 'Scène à tourner', zh: '待拍摄场景' },
+  };
+
+  function setLang(l) {
+    lang = l;
+    document.documentElement.setAttribute('lang', l);
+    btnFr.classList.toggle('active', l === 'fr');
+    btnZh.classList.toggle('active', l === 'zh');
+    render();
+  }
 
   // Perforations : nombre adapté à la largeur
   function buildHoles() {
@@ -350,9 +417,10 @@
       // Pas d'autoplay : lecture uniquement au clic du user sur play
       frame.innerHTML = `<video src="${s.src}" controls loop playsinline preload="metadata"></video>`;
     } else if (s.type === 'text') {
-      frame.innerHTML = `<div class="intertitle">${s.text}<span class="fleuron">&#10022; &#10022; &#10022;</span></div>`;
+      const t = (lang === 'zh' && s.zh) ? s.zh : s.text;
+      frame.innerHTML = `<div class="intertitle">${t}<span class="fleuron">&#10022; &#10022; &#10022;</span></div>`;
     } else {
-      frame.innerHTML = `<div class="todo"><div class="clap">&#127916; Scène à tourner</div><p>${s.text}</p></div>`;
+      frame.innerHTML = `<div class="todo"><div class="clap">&#127916; ${UI.todo[lang]}</div><p>${s.text}</p></div>`;
     }
 
     counter.textContent = pad(current + 1) + ' / ' + pad(SLIDES.length);
@@ -372,10 +440,16 @@
   btnPrev.addEventListener('click', () => { go(-1); btnPrev.blur(); });
   btnNext.addEventListener('click', () => { go(1);  btnNext.blur(); });
 
+  btnFr.addEventListener('click', () => { setLang('fr'); btnFr.blur(); });
+  btnZh.addEventListener('click', () => { setLang('zh'); btnZh.blur(); });
+
   document.addEventListener('keydown', (e) => {
     if (e.repeat) return; // touche maintenue = une seule slide
     if (e.key === 'ArrowLeft')  { e.preventDefault(); go(-1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    if (e.key.toLowerCase() === 'l') {
+      document.querySelector('.flags').classList.toggle('visible');
+    }
   });
 
   window.addEventListener('resize', buildHoles);
